@@ -66,11 +66,6 @@ jobs:
         run: |
           bin/rails db:create
           bin/rails db:migrate
-      - name: Precompile assets
-        env:
-          RAILS_ENV: test
-        run: |
-          bin/rails assets:precompile
       - name: Run tests
         run: bundle exec rspec
       - name: Upload coverage results
@@ -113,11 +108,6 @@ jobs:
         run: |
           bin/rails db:create
           bin/rails db:migrate
-      - name: Precompile assets
-        env:
-          RAILS_ENV: test
-        run: |
-          bin/rails assets:precompile
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
