@@ -48,7 +48,7 @@ jobs:
         run: |
           bin/rails assets:precompile
       - name: Run tests
-        run: rspec
+        run: bundle exec rake
       - name: Upload coverage results
         uses: actions/upload-artifact@master
         if: always()
@@ -59,6 +59,20 @@ jobs:
     name: Cypress
     needs: code-linting
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v1
       - uses: ruby/setup-ruby@v1
@@ -69,6 +83,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+      - name: Create database
+        env:
+          RAILS_ENV: test
+        run: |
+          bin/rails db:create
+          bin/rails db:migrate
       - name: Precompile assets
         env:
           RAILS_ENV: test
