@@ -61,6 +61,7 @@ On each commit being pushed to the repo we're running a CI workflow defined in `
 * E2E tests
 
 ## Deployment
-
+Continuous deployment done in Heroku!
+You can find the production deployment here: https://dog-img-0f3182610707.herokuapp.com/
 
 Cheers!
