@@ -1,0 +1,8 @@
+<div id="image_container" class="mt-6" data-cy="image-container">
+  <h2 class="mb-4">Bread Name: <b><%= dog_breed %></b></h2>
+  <% unless error %>
+    <%= image_tag dog_image_url, alt: dog_breed, loading: "lazy" %>
+  <% else %>
+    <p><%= error %></p>
+  <% end %>
+</div>

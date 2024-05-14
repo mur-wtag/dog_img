@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.logo {
+    svg {
+        margin-right: 10px;
+    }
+}
+
+.dog-images {
+    .dog-image-loader {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        left: 42%;
+
+        &.loading {
+            display: flex;
+        }
+    }
+}

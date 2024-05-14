@@ -1,0 +1,22 @@
+<div class="dog-images container max-w-screen-lg mx-auto px-5 mt-10" data-controller="dog">
+  <div class="relative">
+    <%= turbo_frame_tag "dog_form" do %>
+      <%= form_with(url: fetch_breed_image_path, method: :post, data: { turbo_frame: "image_container", dog_target: "form" }, class: "flex") do |form| %>
+        <div class="">
+          <label for="breed" class="block mb-2 text-sm font-medium">Breed</label>
+          <%= form.text_field :breed,
+                              placeholder: "Please enter Dog Breed for a random image",
+                              class: "shadow appearance-none border rounded text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-96 max-sm:mb-5",
+                              data: { cy: "breed-input" } %>
+
+          <%= form.submit "Submit",
+                          data: { cy: "breed-submit" },
+                          class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-96 sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <div class="dog-image-loader mt-6" data-dog-target="dynamicImageLoader" data-cy="image-loader">Loading...</div>
+    <div id="image_container" class="mt-6" data-cy="image-container"></div>
+  </div>
+</div>
