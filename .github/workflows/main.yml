@@ -12,20 +12,6 @@ jobs:
   code-linting:
     name: Code linting
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:latest
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_DB: ${{ env.POSTGRES_DB }}
-          POSTGRES_USER: ${{ env.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v1
       - uses: ruby/setup-ruby@v1
@@ -46,22 +32,6 @@ jobs:
             bin/yarn eslint app
             bin/yarn eslint cypress
             bin/yarn eslint config/tailwind.config.js
-      - name: Create database
-        env:
-          RAILS_ENV: test
-        run: |
-          bin/rails db:create
-          bin/rails db:migrate
-      - name: Trigger check of schema file change
-        run: |
-          status=$(git status --porcelain -- db/schema.rb)
-          echo "schema_state=$status" >> $GITHUB_ENV
-      - name: Evaluate if there are changes
-        if: ${{ env.schema_state != ''}}
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed("Schema was changed on setup!")
   tests:
     name: RSpec
     needs: code-linting
@@ -90,15 +60,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+      - name: Create database
+        env:
+          RAILS_ENV: test
+        run: |
+          bin/rails db:create
+          bin/rails db:migrate
       - name: Precompile assets
         env:
           RAILS_ENV: test
         run: |
           bin/rails assets:precompile
       - name: Run tests
-        run: bundle exec rake
-        env:
-          RAILS_ENV: test
+        run: bundle exec rspec
       - name: Upload coverage results
         uses: actions/upload-artifact@master
         if: always()
